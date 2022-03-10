@@ -1,0 +1,24 @@
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: black;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+<td class="w3-center">
+                  <div class="w3-display-container w3-hover-opacity">
+                    <span>Rose</span> <span><img class="w3-image w3-round w3-animate-right w3-hide-small" 
+                    src="pflanze.jpg" alt="pflanze.jpg" width=100px height=100px></span></td>
+                    <div class="w3-display-middle w3-display-hover">
+                      <button class="w3-button w3-black">John Doe</button>
+                    </div>
+                  </div>
