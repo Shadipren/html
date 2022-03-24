@@ -1,42 +1,55 @@
-import React from 'react';
-import ReactTable from 'react-table'
+import React, { useEffect, useState } from 'react';
+import { getSocket } from './components/SocketSingleton';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentData: []
-    };
-    console.log('test')
-    this.ws = new WebSocket("ws://127.0.0.1:8888/");
+const App = () => {
+
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
-  render() {
-    this.ws.onopen = () => {
-      console.log('Opened Connection!')
-    };
+  const [testData, setTestData] = useState([]);
+  const [statusInfo, setStatusInfo] = useState([]);
+  let socket = getSocket("http://localhost:8080");
 
-    this.ws.onmessage = (event) => {
-      this.setState({ currentData: JSON.parse(event.data) });
-    };
+  const init = async() => {
+    var response = await fetch("http://localhost:8080/run")
+    var result = await response.json();
+    console.log("res", result)
+    setStatusInfo([result])
+    // setTestData([result])
+  }
 
-    this.ws.onclose = () => {
-      console.log('Closed Connection!')
-    };
+  useEffect(()=>{
+    init()
+    socket.on('update', (data) => {
+      setTestData(arr => [...arr, ...data.data])
+    })
+  },[])
+
+  const request = () => {
+    socket.emit('request')
+  }
+
 
     return (
       <div className="App">
+        <button onClick={request}>Request Data</button>
+        <div>
+          Robot is currently {statusInfo.filter(x => x.name !== undefined).map(x => {
+            return <p key={uuidv4()}>{x.status}</p>
+          }) }
+        </div>
         <ul className="list">
-            {this.state.currentData.map((item, index) => (
-              <li key={index}>
-                {item.name}
-                {item.number}
-              </li>
-            ))}
+          {testData.filter(x => x.name !== undefined).map(x => {
+            //Display appended data
+            return <p key={uuidv4()}>{x.name} | {x.number}</p>
+          })}
         </ul>
       </div>
     );
-  }
 }
 
 export default App;
