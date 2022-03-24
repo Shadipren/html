@@ -12,6 +12,7 @@ const App = () => {
 
   const [testData, setTestData] = useState([]);
   const [statusInfo, setStatusInfo] = useState([]);
+  const [events, setEvents] = useState([]);
   let socket = getSocket("http://localhost:8080");
 
   const init = async() => {
@@ -26,6 +27,9 @@ const App = () => {
     init()
     socket.on('update', (data) => {
       setTestData(arr => [...arr, ...data.data])
+    })
+    socket.on('event', (data) => {
+      setEvents(arr=> [...arr, ...data.data])
     })
   },[])
 
@@ -44,6 +48,12 @@ const App = () => {
         </div>
         <ul className="list">
           {testData.filter(x => x.name !== undefined).map(x => {
+            //Display appended data
+            return <p key={uuidv4()}>{x.name} | {x.number}</p>
+          })}
+        </ul>
+        <ul className="list">
+          {events.filter(x => x.name !== undefined).map(x => {
             //Display appended data
             return <p key={uuidv4()}>{x.name} | {x.number}</p>
           })}
