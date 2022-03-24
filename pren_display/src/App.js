@@ -13,6 +13,7 @@ const App = () => {
   const [testData, setTestData] = useState([]);
   const [statusInfo, setStatusInfo] = useState([]);
   const [events, setEvents] = useState([]);
+  const [speed, setSpeed] = useState([]);
   let socket = getSocket("http://localhost:8080");
 
   const init = async() => {
@@ -29,7 +30,11 @@ const App = () => {
       setTestData(arr => [...arr, ...data.data])
     })
     socket.on('event', (data) => {
-      setEvents(arr=> [...arr, ...data.data])
+      setEvents(arr => [...arr, ...data.data])
+    })
+    socket.on('speed', (data) => {
+      console.log("Speed update Data:" + data.data.message)
+      setSpeed(data.data.message)
     })
   },[])
 
@@ -41,6 +46,9 @@ const App = () => {
     return (
       <div className="App">
         <button onClick={request}>Request Data</button>
+        <div>
+          <span>{speed}</span>
+        </div>
         <div>
           Robot is currently {statusInfo.filter(x => x.name !== undefined).map(x => {
             return <p key={uuidv4()}>{x.status}</p>
