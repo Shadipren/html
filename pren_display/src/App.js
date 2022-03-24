@@ -14,13 +14,17 @@ const App = () => {
   const [statusInfo, setStatusInfo] = useState([]);
   const [events, setEvents] = useState([]);
   const [speed, setSpeed] = useState([]);
+  const [voltagePrint, setVoltagePrint] = useState([]);
+  const [coils, setCoils] = useState([]);
+  const [acceleration, setAcceleration] = useState([]);
+  const [voltageMotor, setVoltageMotor] = useState([]);
   let socket = getSocket("http://localhost:8080");
 
   const init = async() => {
     var response = await fetch("http://localhost:8080/run")
     var result = await response.json();
     console.log("res", result)
-    setStatusInfo([result])
+    setStatusInfo(result)
     // setTestData([result])
   }
 
@@ -36,6 +40,26 @@ const App = () => {
       console.log("Speed update Data:" + data.data.message)
       setSpeed(data.data.message)
     })
+    socket.on('voltage_print', (data) => {
+      console.log("voltage_print update Data:" + data.data.message)
+      setSpeed(data.data.message)
+    })
+    socket.on('coils', (data) => {
+      console.log("coils update Data:" + data.data.message)
+      setSpeed(data.data.message)
+    })
+    socket.on('acceleration', (data) => {
+      console.log("accelerations update Data:" + data.data.message)
+      setSpeed(data.data.message)
+    })
+    socket.on('voltage_motor', (data) => {
+      console.log("voltage_motor update Data:" + data.data.message)
+      setSpeed(data.data)
+    })
+    socket.on('statusInfo', (data) => {
+      console.log("status info update Data:" + data.data.status)
+      setStatusInfo(data.data)
+    })
   },[])
 
   const request = () => {
@@ -47,12 +71,17 @@ const App = () => {
       <div className="App">
         <button onClick={request}>Request Data</button>
         <div>
-          <span>{speed}</span>
+          <span>Speed: {speed}</span> 
+          {/* do something like this for all sensor data */}
         </div>
         <div>
-          Robot is currently {statusInfo.filter(x => x.name !== undefined).map(x => {
-            return <p key={uuidv4()}>{x.status}</p>
-          }) }
+          Robot is currently {() => {
+            if (statusInfo.status == "online")
+              <h3>ONLINE</h3>
+            else
+              <h3>OFFLINE</h3>
+            } 
+          }
         </div>
         <ul className="list">
           {testData.filter(x => x.name !== undefined).map(x => {
@@ -63,7 +92,7 @@ const App = () => {
         <ul className="list">
           {events.filter(x => x.name !== undefined).map(x => {
             //Display appended data
-            return <p key={uuidv4()}>{x.name} | {x.number}</p>
+            return <p key={uuidv4()}>{x.name} | {x.message}</p>
           })}
         </ul>
       </div>
