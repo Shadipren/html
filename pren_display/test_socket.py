@@ -40,7 +40,12 @@ def request():
     print('Data being requested')
     # await sendData()
     update_sensor_data('speed', 300)
-    pass
+
+
+@socketio.event
+def event(data):
+    print(f'event from client received {data}')
+    socketio.emit('event', json.dumps(data))
 
 
 @socketio.on('*')
@@ -61,116 +66,3 @@ def disconnect():
 if __name__ == '__main__':
     socketio.run(app, debug=True)
 
-
-#
-# import json
-#
-# import aiohttp_cors
-# import socketio
-# import asyncio
-# from aiohttp import web
-# import random
-#
-#
-# # create a Socket.IO server
-# sio = socketio.AsyncServer(cors_allowed_origins="*")
-#
-# async def update_sensor_data(sensor_type, message):
-#     for x in range(600):
-#         data = {
-#             "name": sensor_type,
-#             "message": x
-#         }
-#         print(f"Updating sensor data type: {sensor_type} Data: {data['message']}")
-#         await sio.emit(sensor_type, {"data": data})
-#         x = x + 1
-#
-# @sio.event
-# async def request(sid):
-#     print('Data being requested', sid)
-#     # await sendData()
-#     await update_sensor_data('speed', 300)
-#     pass
-#
-#
-# @sio.on('*')
-# async def catch_all(self, event, sid, data):
-#     pass
-#
-#
-# @sio.event
-# async def connect(sid, environ, auth):
-#     print('connect ', sid)
-#
-#
-# @sio.event
-# async def disconnect(sid):
-#     print('disconnect ', sid)
-#
-#
-# async def handle(request):
-#     print("handle called")
-#     return web.FileResponse('./build/index.html')
-#
-#
-# async def handleRun(request):
-#     text = {
-#         "name": "Random Int 1",
-#         "number": random.randint(0, 1000)
-#     }
-#     return web.Response(text=json.dumps(text))
-#
-#
-# async def sendData():
-#     data = [
-#         {
-#             "name": "Random Int 1",
-#             "number": random.randint(0, 1000)
-#         },
-#         {
-#             "name": "Random Int 2",
-#             "number": random.randint(1001, 2000)
-#         },
-#         {
-#             "name": "Random Int 3",
-#             "number": random.randint(2001, 3000)
-#         }
-#     ]
-#     print("sending Data")
-#     await sio.emit('update', {"data": data})
-#
-#
-#
-#     # data = {
-#     #     "name": sensor_type,
-#     #     "message": message
-#     # }
-#     # print(f"Updating sensor data type: {sensor_type} Data: {message}")
-#     # await sio.emit(sensor_type, {"data": data})
-#
-#
-# app = web.Application()
-#
-# # app.add_routes([web.get('/', handle),
-# #                 web.get('/{name}', handle),
-# #                 web.get('/run', handleRun)])
-# cors = aiohttp_cors.setup(app, defaults={
-#     "*": aiohttp_cors.ResourceOptions(
-#         allow_credentials=True,
-#         expose_headers="*",
-#         allow_headers="*",
-#     )
-# })
-#
-# root = cors.add(app.router.add_resource("/"))
-# cors.add(root.add_route("GET", handle))
-#
-# run = cors.add(app.router.add_resource("/run"))
-# cors.add(run.add_route("GET", handleRun))
-#
-# sio.attach(app)
-#
-# app.router.add_static('/', './build/')
-#
-# if __name__ == '__main__':
-#     web.run_app(app)
