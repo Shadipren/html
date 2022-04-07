@@ -18,10 +18,10 @@ const App = () => {
   const [coils, setCoils] = useState([]);
   const [acceleration, setAcceleration] = useState([]);
   const [voltageMotor, setVoltageMotor] = useState([]);
-  let socket = getSocket("http://localhost:8080");
+  let socket = getSocket("http://localhost:5000");
 
   const init = async() => {
-    var response = await fetch("http://localhost:8080/run")
+    var response = await fetch("http://localhost:5000/run")
     var result = await response.json();
     console.log("res", result)
     setStatusInfo(result)
@@ -31,30 +31,35 @@ const App = () => {
   useEffect(()=>{
     init()
     socket.on('update', (data) => {
+      data = JSON.parse(data)
       setTestData(arr => [...arr, ...data.data])
     })
     socket.on('event', (data) => {
-      setEvents(arr => [...arr, ...data.data])
+      console.log('data from event ' + data)
+      data = JSON.parse(data)
+      setEvents(arr => [...arr, data.data])
     })
     socket.on('speed', (data) => {
+      console.log("data",data)
+      data = JSON.parse(data)
       console.log("Speed update Data:" + data.data.message)
       setSpeed(data.data.message)
     })
     socket.on('voltage_print', (data) => {
       console.log("voltage_print update Data:" + data.data.message)
-      setSpeed(data.data.message)
+      setVoltagePrint(data.data.message)
     })
     socket.on('coils', (data) => {
       console.log("coils update Data:" + data.data.message)
-      setSpeed(data.data.message)
+      setCoils(data.data.message)
     })
     socket.on('acceleration', (data) => {
       console.log("accelerations update Data:" + data.data.message)
-      setSpeed(data.data.message)
+      setAcceleration(data.data.message)
     })
     socket.on('voltage_motor', (data) => {
       console.log("voltage_motor update Data:" + data.data.message)
-      setSpeed(data.data)
+      setVoltageMotor(data.data)
     })
     socket.on('statusInfo', (data) => {
       console.log("status info update Data:" + data.data.status)
@@ -71,7 +76,11 @@ const App = () => {
       <div className="App">
         <button onClick={request}>Request Data</button>
         <div>
-          <span>Speed: {speed}</span> 
+          <span>Speed: {speed}</span><br/>
+          <span>VoltagePrint: {voltagePrint}</span><br/> 
+          <span>coils: {coils}</span><br/>
+          <span>Acceleration: {acceleration}</span><br/>
+          <span>VoltageMotor: {voltageMotor}</span><br/> 
           {/* do something like this for all sensor data */}
         </div>
         <div>
