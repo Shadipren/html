@@ -18,10 +18,11 @@ const App = () => {
   const [coils, setCoils] = useState([]);
   const [acceleration, setAcceleration] = useState([]);
   const [voltageMotor, setVoltageMotor] = useState([]);
-  let socket = getSocket("http://localhost:5000");
+  //let socket = getSocket("http://localhost:5000");
+  let socket = getSocket("https://flask-pren.herokuapp.com:"+process.env.PORT);
 
   const init = async() => {
-    var response = await fetch("http://localhost:5000/run")
+    var response = await fetch("http://flask-pren.herokuapp.com:"+process.env.PORT+"/run")
     var result = await response.json();
     console.log("res", result)
     setStatusInfo(result)
