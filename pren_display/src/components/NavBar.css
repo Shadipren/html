@@ -91,6 +91,11 @@ paragraph.projekt-discreption {
     color: black;
 }
 
+.liveSteam{
+    font-size: 60px !important;
+    font-weight: 10;
+}
+
 @media screen and (max-width: 899px) {
     body {
       padding: auto;

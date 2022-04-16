@@ -1,15 +1,14 @@
-import { blue } from '@mui/material/colors';
-import React from 'react';
+import * as React from 'react';
 import { Avatar, Container, Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Paper, Button } from '@mui/material';
+import Box from '@mui/material/Box';
 
 
 import Hslu from '../images/hsluCampus1.jpg';
 import Robot from '../images/robot.jpg'; import Robot2 from '../images/Elektro.jpg';
 import './NavBar.css';
 import { borderRadius, color, margin, padding } from '@mui/system';
-import { alignProperty } from '@mui/material/styles/cssUtils';
 
 const styles = {
     paperContainer1: {
@@ -43,7 +42,7 @@ export default class Home extends React.Component {
             <box maxWidth="xl">
                 <Grid style={styles.paperContainer1} direction="row" spacing={1}>
                     <Typography variant= '3' className='backgroundText'>Pflanzenerkennung ganz Autonom</Typography>
-                    <Typography variant="overline" className='titleSpan'>Loerm Ipsum</Typography>
+                    <Typography variant="overline" className='titleSpan'></Typography>
                 </Grid>
                 <Grid container spacing={0} row sx={{mr: 16, py: 8, my: 8}}>
                     <Grid item xs={12} md={6}>
@@ -67,9 +66,8 @@ export default class Home extends React.Component {
                     }}>
                     <Grid item style={styles.paperContainer3} xs={12} md={6} sx={{gridRow: '1 / 3'}}></Grid>
                     <Grid item xs={12} md={6} sx={{pb:2}}>
-                        <Typography varaint="h1"
+                        <Typography className='liveSteam' variant='h1'
                         sx={{
-                            fontSize: 34,
                             fontWeight: '500',
                             textAlign: 'center',
                             pt: 10
@@ -108,6 +106,21 @@ export default class Home extends React.Component {
                         Wenn Sie nicht das finden, was Sie suchen, melden Sie sich bitte bei
                         uns - wir helfen Ihnen gerne weiter.
                     </Typography>
+                    <Grid container justifyContent="center">
+                        <Button variant="contained"
+                            sx={{
+                                color: 'white',
+                                bgcolor: 'black', px: 4, py: 2.5,
+                                mt: 6,  mx: 10,
+                                borderRadius: 6,
+                                '&:hover': {
+                                    background: "green",
+                                    color: 'white'
+                                }
+                            }}>zur Galerie
+                        </Button>
+                    </Grid>
+                    
                 </box>
             </box>           
         )
