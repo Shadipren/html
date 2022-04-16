@@ -71,9 +71,8 @@ paragraph.projekt-discreption {
 }
 
 .menuIcon {
-    align-items: left;
     display: flex;
-    color: black;
+    margin-left: 24rem;
 }
 
 .images {

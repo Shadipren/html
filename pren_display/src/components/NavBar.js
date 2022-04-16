@@ -1,19 +1,12 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
+import {
+  AppBar, Box, Toolbar, IconButton, Typography, Container, Button, Menu,
+  MenuItem, Grid
+} from '@mui/material';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Grid } from '@mui/material';
-
 
 import './NavBar.css';
-import { ClassNames } from '@emotion/react';
+
 
 const pages = ['Home', 'Live Stream Parcour', 'Galerie', 'Team'];
 
@@ -58,8 +51,8 @@ const ResponsiveAppBar = () => {
             </Grid>
 
             <Grid item>
-              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none'}}}> 
-                <IconButton 
+              <Box sx={{display: { xs: 'flex', md: 'none'}}}> 
+                <IconButton
                   size="large"
                   aria-label="Menu"
                   aria-controls="menu-appbar"
@@ -67,13 +60,13 @@ const ResponsiveAppBar = () => {
                   onClick={handleOpenNavMenu}
                   color="inherit"
                 >
-                  <MenuIcon
+                  <MenuIcon container
                   aria-label="Menu"
                   fontSize='large'
-                  className="menuIcon" spacing-xs-5/>
+                  className="menuIcon" spacing-xs-5
+                  />
                 </IconButton>
 
-        
                 <Menu
                   id="menu-appbar"
                   anchorEl={anchorElNav}

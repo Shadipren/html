@@ -1,14 +1,10 @@
 import * as React from 'react';
-import { Avatar, Container, Grid } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import { Paper, Button } from '@mui/material';
-import Box from '@mui/material/Box';
-
+import { Avatar, Container, Grid, Typography, Paper, Button, Box} from '@mui/material';
+import { borderRadius, color, margin, padding } from '@mui/system';
 
 import Hslu from '../images/hsluCampus1.jpg';
 import Robot from '../images/robot.jpg'; import Robot2 from '../images/Elektro.jpg';
 import './NavBar.css';
-import { borderRadius, color, margin, padding } from '@mui/system';
 
 const styles = {
     paperContainer1: {
@@ -99,7 +95,7 @@ export default class Home extends React.Component {
                         fontSize: 22,
                         lineHeight: 1.6,
                         color: '#323335', fontWeight: 'bold',
-                        mx: 20, mb: 5, fontFamily: 'Catamaran, sans-serif'
+                        mx: 20, mb: 5, p: 2, fontFamily: 'Catamaran, sans-serif'
                     }}>Sie sind neugierig auf uns und unsere Arbeit?
                         Schauen Sie sich in unserer Galerie um und bekommen Sie
                         ein Gefühl für unsere Werke und was unsere Kunden daran so fasziniert.
