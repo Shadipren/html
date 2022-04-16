@@ -1,0 +1,101 @@
+
+:root {
+    --navBar-background-color: #88ac8c;
+    --header-text-color: #ffffff;
+    --font-family: sans-serif;
+    --navBar-text-size: 25px;
+    --white-color: white;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+.appBar {
+    background-color: var(--navBar-background-color) !important;
+    font-family: var(--font-family);
+    font-size: var(--vavBar-text-size);
+    font-weight: 600;
+    color: white;
+    padding: 2px;
+    margin-bottom: 0px;
+}
+
+.button-text {
+    font-family: var(--font-family);
+    font-size: var(--vavBar-text-size);
+    color: var( --header-text-color);
+    background-color: var(--navBar-background-color);
+    font-weight: 700;
+    align-items: center;
+    padding: 16px;
+    margin: 0px 10px 0px;
+    border: none;
+}
+
+.backgroundText {
+    font-size: 48px;
+    line-height: 48px;
+    display: inline-block;
+    color:  var(--navBar-background-color);
+    padding: 150px 20%;
+    text-align: center;
+}
+
+.titleSpan {
+    font-size: 16px !important;
+    color: white;
+    text-align: center;
+}
+
+.projekt-discreption {
+    display: block;
+    display: flex;
+    text-align: center;
+    margin: 16px;
+    padding: 16px;
+}
+
+h1.projekt-discreption {
+    font-size: 64px !important;
+    font-family: News Cycle,sans-serif;
+}
+
+
+paragraph.projekt-discreption {
+    font-family: News Cycle,sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    line-break: auto;
+}
+
+.menuIcon {
+    align-items: left;
+    display: flex;
+    color: black;
+}
+
+.images {
+    padding: 16px;
+    margin: 100px;
+}
+
+.footer {
+    text-align: center;
+    position: fixed;
+    margin-bottom: 10;
+    width: 100%;
+    height: 200px !important;
+    background-color: rgba(171, 196, 202, 0.75);
+    color: black;
+}
+
+@media screen and (max-width: 899px) {
+    body {
+      padding: auto;
+      margin: auto;
+    }
+
+
+}
