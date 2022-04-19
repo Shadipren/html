@@ -1,4 +1,4 @@
-import client from "socket.io-client";
+import client, { io } from "socket.io-client";
 
 
 var socket = undefined;
@@ -10,7 +10,7 @@ export const getSocket = (ENDPOINT) => {
     if(socket === undefined || ENDPOINT_CURRENT !== ENDPOINT){
         console.log("creating new socket")
         ENDPOINT_CURRENT = ENDPOINT;
-        socket = client(ENDPOINT_CURRENT, {transports:['websocket'], secure: true})
+        socket = client(ENDPOINT_CURRENT, {transports:['websocket'], secure: true}).connect()
     }
     return socket;
 }
