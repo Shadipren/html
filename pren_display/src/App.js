@@ -18,17 +18,20 @@ const App = () => {
   const [coils, setCoils] = useState([]);
   const [acceleration, setAcceleration] = useState([]);
   const [voltageMotor, setVoltageMotor] = useState([]);
-  //let socket = getSocket("http://localhost:5000");
-  //console.log("location.host: "+ location.host)
-  let socket = getSocket(window.location.protocol+"//flask-pren.herokuapp.com");
 
-  const init = async() => {
-    var response = await fetch("https://flask-pren.herokuapp.com/run")
-    //var response = await fetch("http://localhost:5000/run")
+  let endpoint = 'http://localhost:5000'
+  console.log('env: '+process.env.NODE_ENV)
+  if(process.env.NODE_ENV != 'development'){
+    endpoint = window.location.protocol+"//flask-pren.herokuapp.com"
+  }
+
+  const socket = getSocket(endpoint);
+
+  const init = async() => {  
+    var response = await fetch(endpoint+"/run")
     var result = await response.json();
-    console.log("res", result)
-    setStatusInfo(result)
-    // setTestData([result])
+    console.log("init result", result)
+    setStatusInfo(result.data)
   }
 
   useEffect(()=>{
@@ -43,9 +46,8 @@ const App = () => {
       setEvents(arr => [...arr, data.data])
     })
     socket.on('speed', (data) => {
-      console.log("data",data)
+      console.log("speed data",data)
       data = JSON.parse(data)
-      console.log("Speed update Data:" + data.data.message)
       setSpeed(data.data.message)
     })
     socket.on('voltage_print', (data) => {
@@ -71,7 +73,7 @@ const App = () => {
   },[])
 
   const request = () => {
-    socket.emit('request')
+    socket.emit('request_test_data')
   }
 
 
@@ -88,6 +90,7 @@ const App = () => {
         </div>
         <div>
           Robot is currently {() => {
+            console.log('statusInfo: '+statusInfo)
             if (statusInfo.status == "online")
               <h3>ONLINE</h3>
             else
