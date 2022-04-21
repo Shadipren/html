@@ -24,7 +24,6 @@ const App = () => {
   if(process.env.NODE_ENV != 'development'){
     endpoint = window.location.protocol+"//flask-pren.herokuapp.com"
   }
-
   const socket = getSocket(endpoint);
 
   const init = async() => {  
@@ -41,34 +40,43 @@ const App = () => {
       setTestData(arr => [...arr, ...data.data])
     })
     socket.on('event', (data) => {
-      console.log('data from event ' + data)
+      console.log('data from event: ',data)
       data = JSON.parse(data)
+      console.log('parsed event : ',data.data)
       setEvents(arr => [...arr, data.data])
     })
     socket.on('speed', (data) => {
-      console.log("speed data",data)
+      // console.log("speed data", data)
       data = JSON.parse(data)
+      // console.log('parsed speed data: ', data)
       setSpeed(data.data.message)
     })
     socket.on('voltage_print', (data) => {
-      console.log("voltage_print update Data:" + data.data.message)
+      // console.log("voltage_print update Data: ", data)
+      data = JSON.parse(data)
       setVoltagePrint(data.data.message)
     })
-    socket.on('coils', (data) => {
-      console.log("coils update Data:" + data.data.message)
-      setCoils(data.data.message)
-    })
+    // socket.on('coils', (data) => {
+    //   console.log("coils update Data: ", data)
+    //   data = JSON.parse(data)
+    //   setCoils(data.data.message)
+    // })
     socket.on('acceleration', (data) => {
-      console.log("accelerations update Data:" + data.data.message)
-      setAcceleration(data.data.message)
+      console.log("accelerations update Data: ", data)
+      data = JSON.parse(data)
+      console.log("accelerations parsed: ", data.data.message)
+      setAcceleration([])
+      data.data.message.map(x => setAcceleration(arr => [...arr,x]))
     })
     socket.on('voltage_motor', (data) => {
-      console.log("voltage_motor update Data:" + data.data.message)
-      setVoltageMotor(data.data)
+      // console.log("voltage_motor update Data: ", data)
+      data = JSON.parse(data)
+      setVoltageMotor(data.data.message)
     })
     socket.on('statusInfo', (data) => {
-      console.log("status info update Data:" + data.data.status)
-      setStatusInfo(data.data)
+      console.log("status info update Data: ", data.data.status)
+      data = JSON.parse(data)
+      setStatusInfo(data.data.message)
     })
   },[])
 
@@ -83,8 +91,15 @@ const App = () => {
         <div>
           <span>Speed: {speed}</span><br/>
           <span>VoltagePrint: {voltagePrint}</span><br/> 
-          <span>coils: {coils}</span><br/>
-          <span>Acceleration: {acceleration}</span><br/>
+          {/* <span>coils: {coils}</span><br/> */}
+          <span>
+            acceleration:
+            <ul className="list">
+              {acceleration.filter(x => x.axis !== undefined).map(x => {
+                return <p key={uuidv4()}>{x.axis} | {x.value}</p>
+              })}
+            </ul>
+          </span>
           <span>VoltageMotor: {voltageMotor}</span><br/> 
           {/* do something like this for all sensor data */}
         </div>
