@@ -11,14 +11,14 @@ const App = () => {
   }
 
   const [testData, setTestData] = useState([]);
-  const [statusInfo, setStatusInfo] = useState([]);
+  // const [statusInfo, setStatusInfo] = useState("");
   const [events, setEvents] = useState([]);
   const [speed, setSpeed] = useState([]);
   const [voltagePrint, setVoltagePrint] = useState([]);
   const [coils, setCoils] = useState([]);
   const [acceleration, setAcceleration] = useState([]);
   const [voltageMotor, setVoltageMotor] = useState([]);
-
+  
   let endpoint = 'http://localhost:5000'
   console.log('env: '+process.env.NODE_ENV)
   if(process.env.NODE_ENV != 'development'){
@@ -30,7 +30,7 @@ const App = () => {
     var response = await fetch(endpoint+"/run")
     var result = await response.json();
     console.log("init result", result)
-    setStatusInfo(result.data)
+    // setStatusInfo(result.status)
   }
 
   useEffect(()=>{
@@ -70,16 +70,25 @@ const App = () => {
       data = JSON.parse(data)
       setVoltageMotor(data.data.message)
     })
-    socket.on('statusInfo', (data) => {
-      console.log("status info update Data: ", data.data.status)
-      data = JSON.parse(data)
-      setStatusInfo(data.data.message)
-    })
+    // socket.on('statusInfo', (data) => {
+    //   console.log("status info update Data: ", data.data.status)
+    //   data = JSON.parse(data)
+    //   setStatusInfo(data.data.message)
+    //   statusDisplay(data.data.message)
+    // })
   },[])
 
   const request = () => {
     socket.emit('request_test_data')
   }
+
+  //  const statusDisplay = (status) =>{
+  //     console.log('statusInfo: '+statusInfo)
+  //     if (status == "online")
+  //       setStatusInfo ONLINE
+  //     else
+  //       <h3>OFFLINE</h3>
+  //  }
 
 
     return (
@@ -106,16 +115,9 @@ const App = () => {
           </span>
           <span>VoltageMotor: {voltageMotor}</span><br/> 
         </div>
-        <div>
-          Robot is currently {() => {
-            console.log('statusInfo: '+statusInfo)
-            if (statusInfo.status == "online")
-              <h3>ONLINE</h3>
-            else
-              <h3>OFFLINE</h3>
-            } 
-          }
-        </div>
+        {/* <div>
+          Robot is currently <h3>{statusDisplay}</h3>
+        </div> */}
         <ul className="list">
           {testData.filter(x => x.name !== undefined).map(x => {
             //Display appended data
