@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getSocket } from './components/SocketSingleton';
+import { Slider } from '@material-ui/core';
 
 const App = () => {
 
@@ -18,6 +19,7 @@ const App = () => {
   const [coils, setCoils] = useState([]);
   const [acceleration, setAcceleration] = useState([]);
   const [voltageMotor, setVoltageMotor] = useState([]);
+  const [sliderVal, setSliderVal] = React.useState(50);
   
   let endpoint = 'http://localhost:5000'
   console.log('env: '+process.env.NODE_ENV)
@@ -82,6 +84,12 @@ const App = () => {
     socket.emit('request_test_data')
   }
 
+  const change_speed = (event, newValue) => {
+    setSliderVal(newValue)
+    console.log('speed changed by slider: '+sliderVal)
+    socket.emit('change_speed', sliderVal)
+  }
+
   //  const statusDisplay = (status) =>{
   //     console.log('statusInfo: '+statusInfo)
   //     if (status == "online")
@@ -94,6 +102,7 @@ const App = () => {
     return (
       <div className="App">
         <button onClick={request}>Request Data</button>
+        <Slider aria-label="Speed Regulator" min={0} max={100} value={sliderVal} onChange={change_speed} />
         <div>
           <span>Speed: {speed}</span><br/>
           <span>VoltagePrint: {voltagePrint}</span><br/> 
