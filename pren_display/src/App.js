@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getSocket } from './components/SocketSingleton';
 import { Slider } from '@material-ui/core';
+import { Stack } from '@mui/material'
+import { Box } from '@material-ui/core';
+import update from 'immutability-helper';
 
 const App = () => {
 
@@ -19,6 +22,7 @@ const App = () => {
   const [coils, setCoils] = useState([]);
   const [acceleration, setAcceleration] = useState([]);
   const [voltageMotor, setVoltageMotor] = useState([]);
+  const [plantData, setPlantData] = useState([]);
   const [sliderVal, setSliderVal] = React.useState(50);
   
   let endpoint = 'http://localhost:5000'
@@ -72,6 +76,20 @@ const App = () => {
       data = JSON.parse(data)
       setVoltageMotor(data.data.message)
     })
+    socket.on('plant_data', (data) => {
+      data = JSON.parse(data)
+      console.log('received plant_data: ', data)
+      const index = plantData.findIndex((pd) => pd.position === data.data.message.position);
+      console.log('index of plant data position: '+data.data.message.position+' index in array: '+index)
+      if (index != -1){
+        const updatePd = update(plantData, {$splice: [[index, 1, data.data.message]]});
+        setPlantData(updatePd);}
+      else{
+        setPlantData(arr =>[...arr, data.data.message])
+      }
+    })
+    
+
     // socket.on('statusInfo', (data) => {
     //   console.log("status info update Data: ", data.data.status)
     //   data = JSON.parse(data)
@@ -102,7 +120,11 @@ const App = () => {
     return (
       <div className="App">
         <button onClick={request}>Request Data</button>
-        <Slider aria-label="Speed Regulator" min={0} max={100} value={sliderVal} onChange={change_speed} />
+        <Box sx={{width:500}}>
+          <Stack spacing={2} direction="row" sx={{mb:1}} alignItems="center">
+          <Slider aria-label="Speed Regulator" min={0} max={100} value={sliderVal} onChange={change_speed} />
+          </Stack>
+        </Box>
         <div>
           <span>Speed: {speed}</span><br/>
           <span>VoltagePrint: {voltagePrint}</span><br/> 
@@ -122,7 +144,25 @@ const App = () => {
               })}
             </ul>
           </span>
-          <span>VoltageMotor: {voltageMotor}</span><br/> 
+          <span>VoltageMotor: {voltageMotor}</span><br/>
+          <span>
+            Plant Data:
+            <ul className="list">
+              {plantData.filter(x => x.position !== undefined).map(x => {
+                return (
+                  <div key={uuidv4()}>
+                      <p key={uuidv4()}>position: | {x.position}</p>
+                      <p key={uuidv4()}>genus: | {x.genus}</p>
+                      <p key={uuidv4()}>family: | {x.family}</p>
+                      <p key={uuidv4()}>scientific name: | {x.scientificName}</p>
+                      <div key={uuidv4()}>commonNames: | 
+                        {x.commonNames.map(y => {return <p key={uuidv4()}>{y}</p>})}
+                      </div >
+                    </div>
+                  )
+              })}
+            </ul>
+          </span>
         </div>
         {/* <div>
           Robot is currently <h3>{statusDisplay}</h3>
