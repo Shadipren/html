@@ -4,11 +4,18 @@ import TopBar from './TopBar'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getSocket } from './SocketSingleton';
 import update from 'immutability-helper';
+import Footer from './Footer';
+import { DataGrid } from '@mui/x-data-grid';
+import DrTest from './DrTest';
+import {Box} from '@mui/material'
 
 const RunView = () =>{
     const theme = createTheme({
         typography: {
-            fontWeightLight: "300"
+            fontWeightLight: "300",
+            span:{
+                pr: "2rem",
+            }
         },
         palette: {
             primary: {
@@ -90,13 +97,34 @@ const RunView = () =>{
         comm();
     },[])   
 
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 20 },
+        { field: 'sensorName', headerName: 'Sensor Name', width: 150 },
+        { field: 'sensorData', headerName: 'Sensor Data', width: 150 },
+      ];
+    
+    const rows = [
+    { id:"1", sensorName: "speed", sensorData: speed},
+    ];
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <TopBar />
             <main>
-                AAAAAAAAAA
+                <div style={{ height: 600, width: '50%' }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={100}
+                        rowsPerPageOptions={[]}
+                        hideFooter={true}
+                        hideFooterPagination={true}
+                    />
+                </div>
+                {/* <DrTest /> */}
             </main>
+            <Footer/>
         </ThemeProvider>
     )
 }
