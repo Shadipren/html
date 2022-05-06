@@ -6,16 +6,12 @@ import { getSocket } from './SocketSingleton';
 import update from 'immutability-helper';
 import Footer from './Footer';
 import { DataGrid } from '@mui/x-data-grid';
-import DrTest from './DrTest';
 import {Box} from '@mui/material'
 
 const RunView = () =>{
     const theme = createTheme({
         typography: {
             fontWeightLight: "300",
-            span:{
-                pr: "2rem",
-            }
         },
         palette: {
             primary: {
@@ -43,8 +39,13 @@ const RunView = () =>{
     const [events, setEvents] = useState([]);
     const [speed, setSpeed] = useState([]);
     const [voltagePrint, setVoltagePrint] = useState([]);
-    const [coils, setCoils] = React.useState([]);
-    const [acceleration, setAcceleration] = useState([]);
+    const [coil1, setCoil1] = React.useState([]);
+    const [coil2, setCoil2] = React.useState([]);
+    const [coil3, setCoil3] = React.useState([]);
+    const [coil4, setCoil4] = React.useState([]);
+    const [accelerationX, setAccelerationX] = useState([]);
+    const [accelerationY, setAccelerationY] = useState([]);
+    const [accelerationZ, setAccelerationZ] = useState([]);
     const [voltageMotor, setVoltageMotor] = useState([]);
     const [plantData, setPlantData] = useState([]);
     
@@ -69,11 +70,16 @@ const RunView = () =>{
         })
         socket.on('coils', (data) => {
             data = JSON.parse(data)
-            setCoils(data.data.message)
+            setCoil1(data.data.message.find(x => x.nr_coil === 1))
+            setCoil2(data.data.message.find(x => x.nr_coil === 2))
+            setCoil3(data.data.message.find(x => x.nr_coil === 3))
+            setCoil4(data.data.message.find(x => x.nr_coil === 4))
         })
         socket.on('acceleration', (data) => {
             data = JSON.parse(data)
-            setAcceleration(data.data.message)
+            setAccelerationX(data.data.message.find(x => x.axis === 'x'))
+            setAccelerationY(data.data.message.find(x => x.axis === 'y'))
+            setAccelerationZ(data.data.message.find(x => x.axis === 'z'))
             })
         socket.on('voltage_motor', (data) => {
             data = JSON.parse(data)
@@ -97,31 +103,77 @@ const RunView = () =>{
         comm();
     },[])   
 
-    const columns = [
-        { field: 'id', headerName: 'ID', width: 20 },
+    const columnsSens = [
         { field: 'sensorName', headerName: 'Sensor Name', width: 150 },
-        { field: 'sensorData', headerName: 'Sensor Data', width: 150 },
+        { field: 'sensorData', headerName: 'Sensor Data', flex: 0.3, minWidth: 50 },
       ];
     
-    const rows = [
-    { id:"1", sensorName: "speed", sensorData: speed},
+    const rowsSens = [
+        { id:"1", sensorName: "Speed", sensorData: speed},
+        { id:"2", sensorName: "Voltage Print", sensorData: voltagePrint},
+        { id:"3", sensorName: "Voltage Motor", sensorData: voltageMotor},
     ];
+
+    const colAcc = [
+        { field: 'axis', headerName: 'Axis', width: 20 },
+        { field: 'data', headerName: 'Acceleration Data',flex: 0.3, minWidth: 50 },
+      ];
+    
+    const rowAcc = [
+        { id:"1", axis: accelerationX.axis, data: accelerationX.value},
+        { id:"2", axis: accelerationY.axis, data: accelerationY.value},
+        { id:"3", axis: accelerationZ.axis, data: accelerationZ.value},
+    ];
+    
+    const colCoi = [
+        { field: 'nrCoil', headerName: '# Coil', width: 150 },
+        { field: 'data', headerName: 'Coil Voltage', width: 150 },
+      ];
+    
+    const rowCoi = [
+        { id:"1", nrCoil: coil1.nr_coil, data: coil1.value},
+        { id:"2", nrCoil: coil2.nr_coil, data: coil2.value},
+        { id:"3", nrCoil: coil3.nr_coil, data: coil3.value},
+        { id:"4", nrCoil: coil4.nr_coil, data: coil4.value},
+    ];
+
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <TopBar />
             <main>
-                <div style={{ height: 600, width: '50%' }}>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        pageSize={100}
-                        rowsPerPageOptions={[]}
-                        hideFooter={true}
-                        hideFooterPagination={true}
-                    />
-                </div>
+                <Box sx={{ pt: "10vh", backgroundColor: "", height: "90vh" }}>
+                    {/* <div className="DataGridContainer"> */}
+                        <DataGrid
+                            rows={rowsSens}
+                            columns={columnsSens}
+                            pageSize={3}
+                            rowsPerPageOptions={[]}
+                            hideFooter={true}
+                            hideFooterPagination={true}
+                            autoHeight={true}
+                        />
+                        <DataGrid
+                            rows={rowAcc}
+                            columns={colAcc}
+                            pageSize={3}
+                            rowsPerPageOptions={[]}
+                            hideFooter={true}
+                            hideFooterPagination={true}
+                            autoHeight={true}
+                        />
+                        <DataGrid
+                            rows={rowCoi}
+                            columns={colCoi}
+                            pageSize={4}
+                            rowsPerPageOptions={[]}
+                            hideFooter={true}
+                            hideFooterPagination={true}
+                            autoHeight={true}
+                        />
+                    {/* </div> */}
+                </Box>
                 {/* <DrTest /> */}
             </main>
             <Footer/>
