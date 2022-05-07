@@ -57,44 +57,39 @@ const RunView = () =>{
         }
         const socket = getSocket(endpoint);
         socket.on('event', (data) => {
-            data = JSON.parse(data)
-            setEvents(arr => [...arr, data.data])
+            console.log('event received ',data)
+            setEvents(arr => [...arr, data])
         })
         socket.on('speed', (data) => {
-            data = JSON.parse(data)
-            setSpeed(data.data.message)
+            setSpeed(data)
         })
         socket.on('voltage_print', (data) => {
-            data = JSON.parse(data)
-            setVoltagePrint(data.data.message)
+            setVoltagePrint(data)
         })
         socket.on('coils', (data) => {
-            data = JSON.parse(data)
-            setCoil1(data.data.message.find(x => x.nr_coil === 1))
-            setCoil2(data.data.message.find(x => x.nr_coil === 2))
-            setCoil3(data.data.message.find(x => x.nr_coil === 3))
-            setCoil4(data.data.message.find(x => x.nr_coil === 4))
+
+            setCoil1(data[0])
+            setCoil2(data[1])
+            setCoil3(data[2])
+            setCoil4(data[3])
         })
         socket.on('acceleration', (data) => {
-            data = JSON.parse(data)
-            setAccelerationX(data.data.message.find(x => x.axis === 'x'))
-            setAccelerationY(data.data.message.find(x => x.axis === 'y'))
-            setAccelerationZ(data.data.message.find(x => x.axis === 'z'))
+            setAccelerationX(data[0])
+            setAccelerationY(data[1])
+            setAccelerationZ(data[2])
             })
         socket.on('voltage_motor', (data) => {
-            data = JSON.parse(data)
-            setVoltageMotor(data.data.message)
+            setVoltageMotor(data)
         })
         socket.on('plant_data', (data) => {
-            data = JSON.parse(data)
             console.log('received plant_data: ', data)
-            const index = plantData.findIndex((pd) => pd.position === data.data.message.position);
-            console.log('index of plant data position: '+data.data.message.position+' index in array: '+index)
+            const index = plantData.findIndex((pd) => pd.position === data.position);
+            console.log('index of plant data position: '+data.position+' index in array: '+index)
             if (index !== -1){
-                const updatePd = update(plantData, {$splice: [[index, 1, data.data.message]]});
+                const updatePd = update(plantData, {$splice: [[index, 1, data]]});
                 setPlantData(updatePd);}
             else{
-                setPlantData(arr =>[...arr, data.data.message])
+                setPlantData(arr =>[...arr, data])
             }
         })
     }      
