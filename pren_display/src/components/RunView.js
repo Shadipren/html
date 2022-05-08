@@ -8,6 +8,13 @@ import Footer from './Footer';
 import { DataGrid } from '@mui/x-data-grid';
 import {Box} from '@mui/material'
 
+let endpoint = 'http://localhost:5000'
+console.log('env: '+process.env.NODE_ENV)
+if(process.env.NODE_ENV !== 'development'){
+    endpoint = window.location.protocol+"//flask-pren.herokuapp.com"
+}
+const socket = getSocket(endpoint);
+
 const RunView = () =>{
     const theme = createTheme({
         typography: {
@@ -29,13 +36,6 @@ const RunView = () =>{
         },
     });
 
-    function uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-        }
-
     const [events, setEvents] = useState([]);
     const [speed, setSpeed] = useState([]);
     const [voltagePrint, setVoltagePrint] = useState([]);
@@ -48,53 +48,75 @@ const RunView = () =>{
     const [accelerationZ, setAccelerationZ] = useState([]);
     const [voltageMotor, setVoltageMotor] = useState([]);
     const [plantData, setPlantData] = useState([]);
-    
-    const comm = () =>{
-        let endpoint = 'http://localhost:5000'
-        console.log('env: '+process.env.NODE_ENV)
-        if(process.env.NODE_ENV !== 'development'){
-            endpoint = window.location.protocol+"//flask-pren.herokuapp.com"
-        }
-        const socket = getSocket(endpoint);
+    const [requestJob, setRequestJob] = useState(0);
+
+
+    const comm = () => {    
         socket.on('event', (data) => {
-            console.log('event received ',data)
-            setEvents(arr => [...arr, data])
+            console.log('event received ',data);
+            setEvents(arr => [...arr, data]);
         })
         socket.on('speed', (data) => {
-            setSpeed(data)
+            setSpeed(data);
         })
         socket.on('voltage_print', (data) => {
-            setVoltagePrint(data)
+            setVoltagePrint(data);
+        })
+        socket.on('timer_start', (data) => {
+            console.log('timer started: ',data)
+            // let intervalId = setInterval(() => {
+            //     request_time();
+            // },1000);
+            // console.log('interval id: ',intervalId)
+            setRequestJob(22);
+            console.log('request job or something uwu: ',requestJob)
+        })
+        socket.on('timer_stop', (data) => {
+            console.log('requestjob content: ',requestJob)
+            clearInterval(requestJob);
+            // setRequestJob(0);
+            console.log('timer stopped: ',data);
+        })
+        socket.on('present_time', (data) => {
+            console.log('time data received: ',data);
         })
         socket.on('coils', (data) => {
-
-            setCoil1(data[0])
-            setCoil2(data[1])
-            setCoil3(data[2])
-            setCoil4(data[3])
+            setCoil1(data[0]);
+            setCoil2(data[1]);
+            setCoil3(data[2]);
+            setCoil4(data[3]);
         })
         socket.on('acceleration', (data) => {
-            setAccelerationX(data[0])
-            setAccelerationY(data[1])
-            setAccelerationZ(data[2])
+            setAccelerationX(data[0]);
+            setAccelerationY(data[1]);
+            setAccelerationZ(data[2]);
             })
         socket.on('voltage_motor', (data) => {
-            setVoltageMotor(data)
+            setVoltageMotor(data);
         })
         socket.on('plant_data', (data) => {
-            console.log('received plant_data: ', data)
+            console.log('received plant_data: ', data);
             const index = plantData.findIndex((pd) => pd.position === data.position);
-            console.log('index of plant data position: '+data.position+' index in array: '+index)
+            console.log('index of plant data position: '+data.position+' index in array: '+index);
             if (index !== -1){
                 const updatePd = update(plantData, {$splice: [[index, 1, data]]});
                 setPlantData(updatePd);}
             else{
-                setPlantData(arr =>[...arr, data])
+                setPlantData(arr =>[...arr, data]);
             }
         })
     }      
 
+    const request_time = () => { 
+        socket.emit('request_time') 
+    }
+
+    const init_timer = () => {
+        socket.emit('request_timer_running')
+    }
+
     useEffect(()=>{
+        init_timer();
         comm();
     },[])   
 
@@ -131,7 +153,6 @@ const RunView = () =>{
         { id:"3", nrCoil: coil3.nr_coil, data: coil3.value},
         { id:"4", nrCoil: coil4.nr_coil, data: coil4.value},
     ];
-
 
     return (
         <ThemeProvider theme={theme}>
@@ -175,4 +196,5 @@ const RunView = () =>{
         </ThemeProvider>
     )
 }
+
 export default RunView
