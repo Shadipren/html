@@ -64,17 +64,8 @@ const RunView = () =>{
         })
         socket.on('timer_start', (data) => {
             console.log('timer started: ',data)
-            // let intervalId = setInterval(() => {
-            //     request_time();
-            // },1000);
-            // console.log('interval id: ',intervalId)
-            setRequestJob(22);
-            console.log('request job or something uwu: ',requestJob)
         })
         socket.on('timer_stop', (data) => {
-            console.log('requestjob content: ',requestJob)
-            clearInterval(requestJob);
-            // setRequestJob(0);
             console.log('timer stopped: ',data);
         })
         socket.on('present_time', (data) => {
@@ -106,17 +97,7 @@ const RunView = () =>{
             }
         })
     }      
-
-    const request_time = () => { 
-        socket.emit('request_time') 
-    }
-
-    const init_timer = () => {
-        socket.emit('request_timer_running')
-    }
-
     useEffect(()=>{
-        init_timer();
         comm();
     },[])   
 
