@@ -6,7 +6,7 @@ import { getSocket } from './SocketSingleton';
 import update from 'immutability-helper';
 import Footer from './Footer';
 import { DataGrid } from '@mui/x-data-grid';
-import {Box} from '@mui/material'
+import {Box, Grid} from '@mui/material'
 
 let endpoint = 'http://localhost:5000'
 console.log('env: '+process.env.NODE_ENV)
@@ -142,34 +142,42 @@ const RunView = () =>{
             <main>
                 <Box sx={{ pt: "10vh", backgroundColor: "", height: "90vh" }}>
                     {/* <div className="DataGridContainer"> */}
-                        <DataGrid
-                            rows={rowsSens}
-                            columns={columnsSens}
-                            pageSize={3}
-                            rowsPerPageOptions={[]}
-                            hideFooter={true}
-                            hideFooterPagination={true}
-                            autoHeight={true}
-                        />
-                        <DataGrid
-                            rows={rowAcc}
-                            columns={colAcc}
-                            pageSize={3}
-                            rowsPerPageOptions={[]}
-                            hideFooter={true}
-                            hideFooterPagination={true}
-                            autoHeight={true}
-                        />
-                        <DataGrid
-                            rows={rowCoi}
-                            columns={colCoi}
-                            pageSize={4}
-                            rowsPerPageOptions={[]}
-                            hideFooter={true}
-                            hideFooterPagination={true}
-                            autoHeight={true}
-                        />
+                    <Grid container>
+                        <Grid item xs={12} lg={4}>
+                            <DataGrid
+                                rows={rowsSens}
+                                columns={columnsSens}
+                                pageSize={3}
+                                rowsPerPageOptions={[]}
+                                hideFooter={true}
+                                hideFooterPagination={true}
+                                autoHeight={true}
+                            />
+                        </Grid>
+                        <Grid item xs={12} lg={4}>
+                            <DataGrid
+                                rows={rowAcc}
+                                columns={colAcc}
+                                pageSize={3}
+                                rowsPerPageOptions={[]}
+                                hideFooter={true}
+                                hideFooterPagination={true}
+                                autoHeight={true}
+                            />
+                        </Grid>
+                        <Grid item xs={12} lg={4}>
+                            <DataGrid
+                                rows={rowCoi}
+                                columns={colCoi}
+                                pageSize={4}
+                                rowsPerPageOptions={[]}
+                                hideFooter={true}
+                                hideFooterPagination={true}
+                                autoHeight={true}
+                            />
+                        </Grid>
                     {/* </div> */}
+                    </Grid>
                 </Box>
                 {/* <DrTest /> */}
             </main>
