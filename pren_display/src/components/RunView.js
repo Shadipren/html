@@ -19,6 +19,7 @@ const RunView = () =>{
     const theme = createTheme({
         typography: {
             fontWeightLight: "300",
+            align: 'center',
         },
         palette: {
             primary: {
@@ -140,9 +141,9 @@ const RunView = () =>{
             <CssBaseline />
             <TopBar />
             <main>
-                <Box sx={{ pt: "10vh", backgroundColor: "", height: "90vh" }}>
+                <Box sx={{pt: "10vh", pb: "15vh", backgroundColor: "", px: '10px'}}>
                     {/* <div className="DataGridContainer"> */}
-                    <Grid container>
+                    <Grid container mb={5}>
                         <Grid item xs={12} lg={4}>
                             <DataGrid
                                 rows={rowsSens}
@@ -181,7 +182,6 @@ const RunView = () =>{
                 </Box>
                 {/* <DrTest /> */}
             </main>
-            <Footer/>
         </ThemeProvider>
     )
 }
