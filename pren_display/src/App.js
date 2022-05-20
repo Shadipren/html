@@ -11,7 +11,7 @@ const App = () => {
       // <DebugUi />
       <Box sx={{minheight: '100%', position: 'relative'}}>
         <RunView />
-        <Box sx={{mt: 15}}>
+        <Box sx={{mt: 2}}>
           <Footer/>
         </Box>
       </Box>

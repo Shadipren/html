@@ -143,7 +143,7 @@ const RunView = () => {
             <CssBaseline />
             <TopBar />
             <main>
-                <Box sx={{pt: "10vh", pb: "15vh", backgroundColor: "", px: '10px'}}>
+                <Box sx={{pt: "10vh", pb: "5vh", backgroundColor: "", px: '10px'}}>
                     {/* <div className="DataGridContainer"> */}
                     <Grid container mb={5}>
                         <Grid item xs={12} lg={4}>
