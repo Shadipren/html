@@ -4,7 +4,6 @@ import TopBar from './TopBar'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getSocket } from './SocketSingleton';
 import update from 'immutability-helper';
-import Footer from './Footer';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Grid } from '@mui/material'
 import { FixedSizeList } from 'react-window';
