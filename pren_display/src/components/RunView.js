@@ -6,16 +6,18 @@ import { getSocket } from './SocketSingleton';
 import update from 'immutability-helper';
 import Footer from './Footer';
 import { DataGrid } from '@mui/x-data-grid';
-import {Box, Grid} from '@mui/material'
+import { Box, Grid } from '@mui/material'
+import { FixedSizeList } from 'react-window';
 
 let endpoint = 'http://localhost:5000'
-console.log('env: '+process.env.NODE_ENV)
-if(process.env.NODE_ENV !== 'development'){
-    endpoint = window.location.protocol+"//flask-pren.herokuapp.com"
+console.log('env: ' + process.env.NODE_ENV)
+if (process.env.NODE_ENV !== 'development') {
+    endpoint = window.location.protocol + "//flask-pren.herokuapp.com"
 }
 const socket = getSocket(endpoint);
 
-const RunView = () =>{
+const RunView = () => {
+
     const theme = createTheme({
         typography: {
             fontWeightLight: "300",
@@ -52,9 +54,9 @@ const RunView = () =>{
     const [requestJob, setRequestJob] = useState(0);
 
 
-    const comm = () => {    
+    const comm = () => {
         socket.on('event', (data) => {
-            console.log('event received ',data);
+            console.log('event received ', data);
             setEvents(arr => [...arr, data]);
         })
         socket.on('speed', (data) => {
@@ -64,13 +66,13 @@ const RunView = () =>{
             setVoltagePrint(data);
         })
         socket.on('timer_start', (data) => {
-            console.log('timer started: ',data)
+            console.log('timer started: ', data)
         })
         socket.on('timer_stop', (data) => {
-            console.log('timer stopped: ',data);
+            console.log('timer stopped: ', data);
         })
         socket.on('present_time', (data) => {
-            console.log('time data received: ',data);
+            console.log('time data received: ', data);
         })
         socket.on('coils', (data) => {
             setCoil1(data[0]);
@@ -82,58 +84,59 @@ const RunView = () =>{
             setAccelerationX(data[0]);
             setAccelerationY(data[1]);
             setAccelerationZ(data[2]);
-            })
+        })
         socket.on('voltage_motor', (data) => {
             setVoltageMotor(data);
         })
         socket.on('plant_data', (data) => {
             console.log('received plant_data: ', data);
             const index = plantData.findIndex((pd) => pd.position === data.position);
-            console.log('index of plant data position: '+data.position+' index in array: '+index);
-            if (index !== -1){
-                const updatePd = update(plantData, {$splice: [[index, 1, data]]});
-                setPlantData(updatePd);}
-            else{
-                setPlantData(arr =>[...arr, data]);
+            console.log('index of plant data position: ' + data.position + ' index in array: ' + index);
+            if (index !== -1) {
+                const updatePd = update(plantData, { $splice: [[index, 1, data]] });
+                setPlantData(updatePd);
+            }
+            else {
+                setPlantData(arr => [...arr, data]);
             }
         })
-    }      
-    useEffect(()=>{
+    }
+    useEffect(() => {
         comm();
-    },[])   
+    }, [])
 
     const columnsSens = [
         { field: 'sensorName', headerName: 'Sensor Name', width: 150 },
         { field: 'sensorData', headerName: 'Sensor Data', flex: 0.3, minWidth: 50 },
-      ];
-    
+    ];
+
     const rowsSens = [
-        { id:"1", sensorName: "Speed", sensorData: speed},
-        { id:"2", sensorName: "Voltage Print", sensorData: voltagePrint},
-        { id:"3", sensorName: "Voltage Motor", sensorData: voltageMotor},
+        { id: "1", sensorName: "Speed", sensorData: speed },
+        { id: "2", sensorName: "Voltage Print", sensorData: voltagePrint },
+        { id: "3", sensorName: "Voltage Motor", sensorData: voltageMotor },
     ];
 
     const colAcc = [
         { field: 'axis', headerName: 'Axis', width: 20 },
-        { field: 'data', headerName: 'Acceleration Data',flex: 0.3, minWidth: 50 },
-      ];
-    
-    const rowAcc = [
-        { id:"1", axis: accelerationX.axis, data: accelerationX.value},
-        { id:"2", axis: accelerationY.axis, data: accelerationY.value},
-        { id:"3", axis: accelerationZ.axis, data: accelerationZ.value},
+        { field: 'data', headerName: 'Acceleration Data', flex: 0.3, minWidth: 50 },
     ];
-    
+
+    const rowAcc = [
+        { id: "1", axis: accelerationX.axis, data: accelerationX.value },
+        { id: "2", axis: accelerationY.axis, data: accelerationY.value },
+        { id: "3", axis: accelerationZ.axis, data: accelerationZ.value },
+    ];
+
     const colCoi = [
         { field: 'nrCoil', headerName: '# Coil', width: 150 },
         { field: 'data', headerName: 'Coil Voltage', width: 150 },
-      ];
-    
+    ];
+
     const rowCoi = [
-        { id:"1", nrCoil: coil1.nr_coil, data: coil1.value},
-        { id:"2", nrCoil: coil2.nr_coil, data: coil2.value},
-        { id:"3", nrCoil: coil3.nr_coil, data: coil3.value},
-        { id:"4", nrCoil: coil4.nr_coil, data: coil4.value},
+        { id: "1", nrCoil: coil1.nr_coil, data: coil1.value },
+        { id: "2", nrCoil: coil2.nr_coil, data: coil2.value },
+        { id: "3", nrCoil: coil3.nr_coil, data: coil3.value },
+        { id: "4", nrCoil: coil4.nr_coil, data: coil4.value },
     ];
 
     return (
@@ -177,7 +180,24 @@ const RunView = () =>{
                                 autoHeight={true}
                             />
                         </Grid>
-                    {/* </div> */}
+                        {/* </div> */}
+                    </Grid>
+                    <FixedSizeList
+                        height={200}
+                        width='100%'
+                        itemSize={30}
+                        itemCount={events.length}
+                    >
+                        {({ index, style }) => {
+                            return (
+                                <li style={style}>
+                                    {events[index].name} | {events[index].message}
+                                </li>
+                            );
+                        }}
+                    </FixedSizeList>
+                    <Grid>
+
                     </Grid>
                 </Box>
                 {/* <DrTest /> */}
