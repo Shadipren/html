@@ -148,7 +148,7 @@ const RunView = () => {
             <CssBaseline />
             <TopBar />
             <main>
-                <Box sx={{pt: "10vh", pb: "5vh", backgroundColor: "", px: '10px'}}>
+                <Box sx={{pt: "10vh", pb: "16px", backgroundColor: "", px: '16px'}}>
                     <Grid container mb={5}>
                         <Grid item xs={12} lg={4}>
                             <DataGrid
@@ -185,7 +185,7 @@ const RunView = () => {
                         </Grid>
                     </Grid>
                     <FixedSizeList
-                        height={200}
+                        height={16}
                         width='100%'
                         itemSize={30}
                         itemCount={events.length}
