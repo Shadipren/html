@@ -7,7 +7,7 @@ import update from 'immutability-helper';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Grid } from '@mui/material'
 import { FixedSizeList } from 'react-window';
-import PlantCard from './PlantCard';
+import { PlantCards}  from './PlantCards';
 
 let endpoint = 'http://localhost:5000'
 console.log('env: ' + process.env.NODE_ENV)
@@ -53,10 +53,8 @@ const RunView = () => {
     const [plantData, setPlantData] = useState([]);
     const [matchPosition, setMatchPosition] = useState(-1);
 
-
-    const comm = () => {
+    useEffect(() => {
         socket.on('event', (data) => {
-            console.log('event received ', data);
             setEvents(arr => [...arr, data]);
         })
         socket.on('speed', (data) => {
@@ -91,22 +89,21 @@ const RunView = () => {
         socket.on('plant_data', (data) => {
             console.log('received plant_data: ', data);
             const index = plantData.findIndex((pd) => pd.position === data.position);
-            console.log('index of plant data position: ' + data.position + ' index in array: ' + index);
+            // console.log('index of plant data position: ' + data.position + ' index in array: ' + index);
             if (index !== -1) {
                 const updatePd = update(plantData, { $splice: [[index, 1, data]] });
                 setPlantData(updatePd);
+                console.log('pd after update:', plantData)
             }
             else {
                 setPlantData(arr => [...arr, data]);
+                console.log('PlantData: ', plantData);
             }
         })
         socket.on('match_found', (data) => {
             console.log("match found at: ",data);
             setMatchPosition(data)
         })
-    }
-    useEffect(() => {
-        comm();
     }, [])
 
     const columnsSens = [
@@ -163,17 +160,6 @@ const RunView = () => {
                         </Grid>
                         <Grid item xs={12} lg={4}>
                             <DataGrid
-                                rows={rowAcc}
-                                columns={colAcc}
-                                pageSize={3}
-                                rowsPerPageOptions={[]}
-                                hideFooter={true}
-                                hideFooterPagination={true}
-                                autoHeight={true}
-                            />
-                        </Grid>
-                        <Grid item xs={12} lg={4}>
-                            <DataGrid
                                 rows={rowCoi}
                                 columns={colCoi}
                                 pageSize={4}
@@ -183,9 +169,26 @@ const RunView = () => {
                                 autoHeight={true}
                             />
                         </Grid>
+                        <Grid item xs={12} lg={4}>
+                            <DataGrid
+                                rows={rowAcc}
+                                columns={colAcc}
+                                pageSize={3}
+                                rowsPerPageOptions={[]}
+                                hideFooter={true}
+                                hideFooterPagination={true}
+                                autoHeight={true}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container mb={10}>
+                        <PlantCards
+                            plantData = {plantData}
+                            match = {matchPosition}
+                        />
                     </Grid>
                     <FixedSizeList
-                        height={16}
+                        height={200}
                         width='100%'
                         itemSize={30}
                         itemCount={events.length}
@@ -198,12 +201,6 @@ const RunView = () => {
                             );
                         }}
                     </FixedSizeList>
-                    <Grid>
-                        {plantData.filter(x => x.position !== undefined).map(x => {
-                                return <PlantCard data={x} match={matchPosition}/>
-                            }) 
-                        }
-                    </Grid>
                 </Box>
             </main>
         </ThemeProvider>

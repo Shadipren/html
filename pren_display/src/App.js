@@ -8,8 +8,9 @@ import {Box} from '@mui/material'
 const App = () => {
     return (
       // <DebugUi />
-      <Box sx={{height: '100vh', margin:0, display: 'flex', flexDirection: 'column'}}>
+      <Box sx={{height: '120vh', margin:0, display: 'flex', flexDirection: 'column'}}>
           <Box>
+            {/* <DebugUi /> */}
             <RunView />
           </Box>
           <Box  sx={{mt: 'auto', bottom: 0}}>

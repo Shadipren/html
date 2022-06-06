@@ -88,6 +88,7 @@ const DebugUi = () => {
 
     return (
       <div className="App">
+             {console.log("retardo")} 
         <button onClick={request}>Request Data</button>
         <Box sx={{width:500}}>
           <Stack spacing={2} direction="row" sx={{mb:1}} alignItems="center">
