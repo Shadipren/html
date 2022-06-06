@@ -7,6 +7,7 @@ import update from 'immutability-helper';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Grid } from '@mui/material'
 import { FixedSizeList } from 'react-window';
+import PlantCard from './PlantCard';
 
 let endpoint = 'http://localhost:5000'
 console.log('env: ' + process.env.NODE_ENV)
@@ -50,7 +51,7 @@ const RunView = () => {
     const [accelerationZ, setAccelerationZ] = useState([]);
     const [voltageMotor, setVoltageMotor] = useState([]);
     const [plantData, setPlantData] = useState([]);
-    const [requestJob, setRequestJob] = useState(0);
+    const [matchPosition, setMatchPosition] = useState(-1);
 
 
     const comm = () => {
@@ -65,7 +66,7 @@ const RunView = () => {
             setVoltagePrint(data);
         })
         socket.on('timer_start', (data) => {
-            console.log('timer started: ', data)
+            console.log('timer started: ', data) 
         })
         socket.on('timer_stop', (data) => {
             console.log('timer stopped: ', data);
@@ -98,6 +99,10 @@ const RunView = () => {
             else {
                 setPlantData(arr => [...arr, data]);
             }
+        })
+        socket.on('match_found', (data) => {
+            console.log("match found at: ",data);
+            setMatchPosition(data)
         })
     }
     useEffect(() => {
@@ -144,7 +149,6 @@ const RunView = () => {
             <TopBar />
             <main>
                 <Box sx={{pt: "10vh", pb: "5vh", backgroundColor: "", px: '10px'}}>
-                    {/* <div className="DataGridContainer"> */}
                     <Grid container mb={5}>
                         <Grid item xs={12} lg={4}>
                             <DataGrid
@@ -179,7 +183,6 @@ const RunView = () => {
                                 autoHeight={true}
                             />
                         </Grid>
-                        {/* </div> */}
                     </Grid>
                     <FixedSizeList
                         height={200}
@@ -196,10 +199,12 @@ const RunView = () => {
                         }}
                     </FixedSizeList>
                     <Grid>
-
+                        {plantData.filter(x => x.position !== undefined).map(x => {
+                                return <PlantCard data={x} match={matchPosition}/>
+                            }) 
+                        }
                     </Grid>
                 </Box>
-                {/* <DrTest /> */}
             </main>
         </ThemeProvider>
     )
