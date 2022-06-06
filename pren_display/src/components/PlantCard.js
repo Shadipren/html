@@ -38,6 +38,6 @@ export default function PlantCard({data, match}) {
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">{card(position=data.position, genus=data.genus, family=data.family, sciName=data.sciName, comNames=data.comNames, matchPos=match.position)}</Card>
-    </Box>
+  </Box>
   );
 }
