@@ -6,14 +6,15 @@ import './components/Style.css'
 import {Box} from '@mui/material'
 
 const App = () => {
-
     return (
       // <DebugUi />
-      <Box sx={{minheight: '100%', position: 'relative'}}>
-        <RunView />
-        <Box sx={{mt: 2}}>
-          <Footer/>
-        </Box>
+      <Box sx={{height: '100vh', margin:0, display: 'flex', flexDirection: 'column'}}>
+          <Box>
+            <RunView />
+          </Box>
+          <Box  sx={{mt: 'auto', bottom: 0}}>
+            <Footer/>
+          </Box>
       </Box>
       
     );
