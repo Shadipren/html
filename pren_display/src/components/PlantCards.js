@@ -32,7 +32,7 @@ const PlantCard = ({data, match}) => {
                 Plant # {data.position}
               </Typography>
               {(() => {
-                console.log('match: ',match);
+                // console.log('match: ',match);
                 if (match === data.position){
                   return (<Typography variant="h5" color="green" component="div">!!matched!!</Typography>)
                 }

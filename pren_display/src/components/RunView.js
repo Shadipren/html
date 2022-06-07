@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext} from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import TopBar from './TopBar'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getSocket } from './SocketSingleton';
+import { SocketContext } from './Socket';
 import update from 'immutability-helper';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Grid } from '@mui/material'
-import { FixedSizeList } from 'react-window';
-import { PlantCards}  from './PlantCards';
-
-let endpoint = 'http://localhost:5000'
-console.log('env: ' + process.env.NODE_ENV)
-if (process.env.NODE_ENV !== 'development') {
-    endpoint = window.location.protocol + "//flask-pren.herokuapp.com"
-}
-const socket = getSocket(endpoint);
+import { PlantCards }  from './PlantCards';
+import EventViewer from './EventViewer';
 
 const RunView = () => {
+
+    const socket = useContext(SocketContext);
 
     const theme = createTheme({
         typography: {
@@ -39,27 +34,6 @@ const RunView = () => {
         },
     });
 
-    const reset = () => {
-        setEvents=[];
-        setSpeed=[];
-        setVoltagePrint=[];
-        setCoil1=[];
-        setCoil2=[];
-        setCoil3=[];
-        setCoil4=[];
-        setAccelerationX=[];
-        setAccelerationY=[];
-        setAccelerationZ=[];
-        setVoltageMotor=[];
-        setPlantData=[];
-        setMatchPosition=-1;
-        setStartTime=0;
-        setStopTime=0;
-        setTimerStopped=false;
-        setTimerStarted=true;
-    }
-
-    const [events, setEvents] = useState([]);
     const [speed, setSpeed] = useState([]);
     const [voltagePrint, setVoltagePrint] = useState([]);
     const [coil1, setCoil1] = React.useState([]);
@@ -78,10 +52,7 @@ const RunView = () => {
     const [timerStarted, setTimerStarted] = useState(false);
 
     useEffect(() => {
-        socket.emit('request_start_time')
-        socket.on('event', (data) => {
-            setEvents(arr => [...arr, data]);
-        })
+        socket.emit('request_start_time');
         socket.on('speed', (data) => {
             setSpeed(data);
         })
@@ -90,7 +61,7 @@ const RunView = () => {
         })
         socket.on('timer_start', (data) => {
             console.log('timer started: ', data) 
-            reset();
+            // resetStates();
             setTimerStarted = true;
             setStartTime = data
             
@@ -128,9 +99,10 @@ const RunView = () => {
             }
         })
         socket.on('match_found', (data) => {
+            console.log("WAAAAAAAAAAAAAAAAAAAAAAA")
             setMatchPosition(data)
         })
-    }, [])
+    }, [socket])
 
     const columnsSens = [
         { field: 'sensorName', headerName: 'Sensor Name', width: 150 },
@@ -227,20 +199,7 @@ const RunView = () => {
                         })()}
                         <div></div>
                     </Box>
-                    <FixedSizeList
-                        height={200}
-                        width='100%'
-                        itemSize={30}
-                        itemCount={events.length}
-                    >
-                        {({ index, style }) => {
-                            return (
-                                <li style={style}>
-                                    {events[index].name} | {events[index].message}
-                                </li>
-                            );
-                        }}
-                    </FixedSizeList>
+                    <EventViewer />
                 </Box>
             </main>
         </ThemeProvider>
