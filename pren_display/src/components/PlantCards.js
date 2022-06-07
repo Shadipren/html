@@ -1,23 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState, useContext} from 'react';
 import {Box, Grid} from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { SocketContext } from './Socket';
+import update from 'immutability-helper';
+
+export const PlantCards = () => {
+  const socket = useContext(SocketContext);
+
+  const [plantData, setPlantData] = useState([]);
+  const [matchPosition, setMatchPosition] = useState(-1);
+
+  useEffect(() => {
+    socket.on('plant_data', (data) => {
+      const index = plantData.findIndex((pd) => pd.position === data.position);
+      // console.log('index of plant data position: ' + data.position + ' index in array: ' + index);
+      if (index !== -1) {
+          const updatePd = update(plantData, { $splice: [[index, 1, data]] });
+          setPlantData(updatePd);
+          console.log('pd after update:', plantData)
+      }
+      else {
+          setPlantData(arr => [...arr, data]);
+      }
+    })
+    socket.on('match_found', (data) => {
+      setMatchPosition(data)
+    })
+  }, [socket]);
 
 
-export const PlantCards = ({plantData, match}) => {
   return (
     <>
-      {plantData.length>0 && plantData.map((data) => {
-        return (
-          <Grid item xs={6} lg={2}>
-            <PlantCard
-              data={data}
-              match={match}
-            />
-          </Grid> 
-        );
-      })}
+      <Grid container mb={2}>           
+        {plantData.length>0 && plantData.map((data) => {
+          return (
+            <Grid item xs={6} lg={2}>
+              <PlantCard
+                data={data}
+                match={matchPosition}
+              />
+            </Grid> 
+          );
+        })}
+      </Grid>
     </>
   );
 };
@@ -55,3 +82,5 @@ const PlantCard = ({data, match}) => {
     </Box>
   );
 };
+
+export default PlantCards

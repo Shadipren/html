@@ -3,7 +3,6 @@ import { SocketContext } from './Socket';
 import { FixedSizeList } from 'react-window';
 
 const EventViewer = () => {
-
     const socket = useContext(SocketContext);
 
     const [events, setEvents] = useState([]);
