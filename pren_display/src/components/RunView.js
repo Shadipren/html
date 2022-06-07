@@ -39,6 +39,26 @@ const RunView = () => {
         },
     });
 
+    const reset = () => {
+        setEvents=[];
+        setSpeed=[];
+        setVoltagePrint=[];
+        setCoil1=[];
+        setCoil2=[];
+        setCoil3=[];
+        setCoil4=[];
+        setAccelerationX=[];
+        setAccelerationY=[];
+        setAccelerationZ=[];
+        setVoltageMotor=[];
+        setPlantData=[];
+        setMatchPosition=-1;
+        setStartTime=0;
+        setStopTime=0;
+        setTimerStopped=false;
+        setTimerStarted=true;
+    }
+
     const [events, setEvents] = useState([]);
     const [speed, setSpeed] = useState([]);
     const [voltagePrint, setVoltagePrint] = useState([]);
@@ -52,8 +72,13 @@ const RunView = () => {
     const [voltageMotor, setVoltageMotor] = useState([]);
     const [plantData, setPlantData] = useState([]);
     const [matchPosition, setMatchPosition] = useState(-1);
+    const [startTime, setStartTime] = useState(0);
+    const [stopTime, setStopTime] = useState(0);
+    const [timerStopped, setTimerStopped] = useState(false);
+    const [timerStarted, setTimerStarted] = useState(false);
 
     useEffect(() => {
+        socket.emit('request_start_time')
         socket.on('event', (data) => {
             setEvents(arr => [...arr, data]);
         })
@@ -65,12 +90,16 @@ const RunView = () => {
         })
         socket.on('timer_start', (data) => {
             console.log('timer started: ', data) 
+            reset();
+            setTimerStarted = true;
+            setStartTime = data
+            
         })
         socket.on('timer_stop', (data) => {
             console.log('timer stopped: ', data);
-        })
-        socket.on('present_time', (data) => {
-            console.log('time data received: ', data);
+            setTimerStopped = true;
+            setStopTime = data
+            
         })
         socket.on('coils', (data) => {
             setCoil1(data[0]);
@@ -87,7 +116,6 @@ const RunView = () => {
             setVoltageMotor(data);
         })
         socket.on('plant_data', (data) => {
-            console.log('received plant_data: ', data);
             const index = plantData.findIndex((pd) => pd.position === data.position);
             // console.log('index of plant data position: ' + data.position + ' index in array: ' + index);
             if (index !== -1) {
@@ -97,11 +125,9 @@ const RunView = () => {
             }
             else {
                 setPlantData(arr => [...arr, data]);
-                console.log('PlantData: ', plantData);
             }
         })
         socket.on('match_found', (data) => {
-            console.log("match found at: ",data);
             setMatchPosition(data)
         })
     }, [])
@@ -181,12 +207,26 @@ const RunView = () => {
                             />
                         </Grid>
                     </Grid>
-                    <Grid container mb={10}>
+                    <Grid container mb={2}>
                         <PlantCards
                             plantData = {plantData}
                             match = {matchPosition}
                         />
                     </Grid>
+                    <Box mb={6}>
+                        {(()=>{
+                            if(timerStopped){
+                                return <div>Run finished at {stopTime}</div>
+                            }
+                            else if(timerStarted){
+                                return <div>Run started at {startTime}</div>
+                            }
+                            else{
+                                return <div>Currently not Running</div>
+                            }
+                        })()}
+                        <div></div>
+                    </Box>
                     <FixedSizeList
                         height={200}
                         width='100%'

@@ -14,8 +14,6 @@ export const PlantCards = ({plantData, match}) => {
             <PlantCard
               data={data}
               match={match}
-              // position={data.position}
-              // same_plant={data.same_plant}
             />
           </Grid> 
         );
@@ -36,7 +34,7 @@ const PlantCard = ({data, match}) => {
               {(() => {
                 console.log('match: ',match);
                 if (match === data.position){
-                  return (<Typography variant="h5" color="green" component="div">matched</Typography>)
+                  return (<Typography variant="h5" color="green" component="div">!!matched!!</Typography>)
                 }
               })()}
               <Typography variant="h5" component="div">
