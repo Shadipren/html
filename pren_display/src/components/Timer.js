@@ -15,20 +15,23 @@ const Timer = () => {
         socket.on('timer_start', (data) => {
             console.log('timer started: ', data) 
             // resetStates();
-            setTimerStarted = true;
-            setStartTime = data
+            setTimerStopped(false);
+            setTimerStarted(true);
+            setStartTime(data);
             
         })
         socket.on('timer_stop', (data) => {
             console.log('timer stopped: ', data);
-            setTimerStopped = true;
-            setStopTime = data
+            setTimerStopped(true);
+            setTimerStarted(false);
+            setStopTime(data);
             
         })
     }, [socket]);
     return (
         <Box mb={6}>
             {(()=>{
+                console.log('determining if running: ', timerStarted, timerStopped);
                 if(timerStopped){
                     return <div>Run finished at {stopTime}</div>
                 }
