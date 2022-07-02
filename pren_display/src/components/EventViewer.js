@@ -9,7 +9,7 @@ const EventViewer = () => {
 
     useEffect(() => {
         socket.on('event', (data) => {
-            console.log("AHAHAHAHH EVENT!!!")
+            // console.log("AHAHAHAHH EVENT!!!")
             setEvents(arr => [...arr, data]);
         })
     }, [socket]);
