@@ -11,9 +11,28 @@ export const PlantCards = () => {
 
   const [plantData, setPlantData] = useState([]);
   const [matchPosition, setMatchPosition] = useState(-1);
+  // const pdat = React.useRef(plantData);
+
+  // const setPlantDataFunc = data => {
+  //   console.log('plant data received: ', data);
+  //   console.log('current plant data: ',pdat.current);
+  //   const index = pdat.current.findIndex((pd) => pd.position === data.position);
+  //   // console.log('index of plant data position: ' + data.position + ' index in array: ' + index);
+  //   if (index !== -1) {
+  //       const updatePd = update(pdat.current, { $splice: [[index, 1, data]] });
+  //       setPlantData(updatePd);
+  //       console.log('pd after update:', pdat.current)
+  //   }
+  //   else {
+  //       setPlantData(arr => [...arr, data]);
+  //   }
+  // }
 
   useEffect(() => {
     socket.on('plant_data', (data) => {
+      // setPlantDataFunc(data);
+      console.log('plant data received: ', data);
+      console.log('current plant data: ',plantData);
       const index = plantData.findIndex((pd) => pd.position === data.position);
       // console.log('index of plant data position: ' + data.position + ' index in array: ' + index);
       if (index !== -1) {
@@ -27,6 +46,10 @@ export const PlantCards = () => {
     })
     socket.on('match_found', (data) => {
       setMatchPosition(data)
+    })
+    socket.on('timer_start', () => {
+      console.log('Clearing out Plant data');
+      setPlantData([])
     })
   }, [socket]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext} from 'react';
+import React, { useEffect, useState, useContext, useRef} from 'react';
 import { SocketContext } from './Socket';
 import { FixedSizeList } from 'react-window';
 
@@ -10,7 +10,7 @@ const EventViewer = () => {
     useEffect(() => {
         socket.on('event', (data) => {
             // console.log("AHAHAHAHH EVENT!!!")
-            setEvents(arr => [...arr, data]);
+            setEvents(arr => [data, ...arr]);
         })
     }, [socket]);
 

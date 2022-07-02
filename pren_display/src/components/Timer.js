@@ -31,7 +31,7 @@ const Timer = () => {
     return (
         <Box mb={6}>
             {(()=>{
-                console.log('determining if running: ', timerStarted, timerStopped);
+                // console.log('determining if running: ', timerStarted, timerStopped);
                 if(timerStopped){
                     return <div>Run finished at {stopTime}</div>
                 }
