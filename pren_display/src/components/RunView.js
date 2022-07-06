@@ -42,14 +42,11 @@ const RunView = () => {
             <main>
                 <Box sx={{pt: "10vh", pb: "16px", backgroundColor: "", px: '16px'}}>
                     <Grid container mb={5}>
-                        <Grid item xs={12} lg={4}>
+                        <Grid item xs={18} lg={6}>
                             <SensorTable />
                         </Grid>
-                        <Grid item xs={12} lg={4}>
+                        <Grid item xs={18} lg={6}>
                             <CoilsTable />
-                        </Grid>
-                        <Grid item xs={12} lg={4}>
-                            <AccelerationTable/>
                         </Grid>
                     </Grid>
                     <PlantCards/>

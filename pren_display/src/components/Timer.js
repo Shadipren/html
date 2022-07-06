@@ -33,10 +33,10 @@ const Timer = () => {
             {(()=>{
                 // console.log('determining if running: ', timerStarted, timerStopped);
                 if(timerStopped){
-                    return <div>Run finished at {stopTime}</div>
+                    return <div>Run finished, took {stopTime} seconds</div>
                 }
                 else if(timerStarted){
-                    return <div>Run started at {startTime}</div>
+                    return <div>Run started</div>
                 }
                 else{
                     return <div>Currently not Running</div>
